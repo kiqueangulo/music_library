@@ -1,14 +1,15 @@
-import { useState, useRef, Fragment } from 'react';
+import React, { useState, useRef, Fragment, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { DataContext } from './context/DataContext';
 import { SearchContext } from './context/SearchContext';
 
+import './App.css';
+
 import Gallery from './components/Galley';
 import SearchBar from './components/SearchBar';
-import ArtistView from './components/ArtistView';
 import AlbumView from './components/AlbumView';
 
-import './App.css';
+const ArtistView = React.lazy(() => import('./components/ArtistView'));
 
 function App() {
   let [message, setMessage] = useState('Search for Music!');
@@ -56,7 +57,11 @@ function App() {
 
           <Route path='/album/:id' element={<AlbumView />}/>
           
-          <Route path='/artist/:id' element={<ArtistView />}/>
+          <Route path='/artist/:id' element={
+            <Suspense fallback={<h1>Loading...</h1>}>
+              <ArtistView />
+            </Suspense>
+          }/>
         
         </Routes>
       </Router>
